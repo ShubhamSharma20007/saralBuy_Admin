@@ -3,14 +3,73 @@ import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Input from "../form/input/InputField";
 import Label from "../form/Label";
+import TextArea from "../form/input/TextArea";
+import { useFetch } from "../../hooks/useFetch";
+import { UserServiceInstance } from "../../service/user.service";
+import { useUserContext } from "../../context/UserContext";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
-    closeModal();
-  };
+  const {fn,data,loading} = useFetch(UserServiceInstance.updateUser)
+  const {user,setUser} = useUserContext();
+  // const{fn,data,loading}= useFetch(UserServiceInstance.updateUser)
+
+  const [formData,setFormData]=useState({
+    firstName:'',
+    lastName:'',
+    email:'',
+    address:'',
+  })
+
+  useEffect(()=>{
+    setFormData({
+      firstName:user?.firstName || '',
+      lastName:user?.lastName || '',
+      email:user?.email || '',
+      address:user?.address || ''
+    })
+  },[user])
+  
+
+  const handleUpdateState = (e:any)=>{
+    console.log(e.target)
+    setFormData({
+      ...formData,
+      [e.target.name]:e.target.value
+    })
+  }
+  async function handleSubmit(e:React.FormEvent<HTMLFormElement>){
+    e.preventDefault();
+    let obj ={};
+    console.log(formData,2)
+    if(formData.firstName.trim().length > 0){
+      obj = {...obj,firstName:formData.firstName}
+    }
+    if(formData.lastName.trim().length > 0){
+      obj = {...obj,lastName:formData.lastName}
+    }
+    if(formData.email.trim().length > 0){
+      obj = {...obj,email:formData.email}
+    }
+  if(formData.address.trim().length > 0){
+      obj = {...obj,address:formData.address}
+    }
+    console.log(obj)
+    fn(user._id,obj)
+  }
+  useEffect(()=>{
+    if(data){
+      toast.success("User updated successfully")
+      setUser({
+        ...user,
+        ...data
+      })
+      new Promise((res)=>setTimeout(res,1000))
+      closeModal()
+    }
+  },[data])
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -24,8 +83,8 @@ export default function UserInfoCard() {
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 First Name
               </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Musharof
+              <p className="text-sm font-medium text-gray-800 dark:text-white/90 capitalize">
+               {user?.firstName}
               </p>
             </div>
 
@@ -33,8 +92,8 @@ export default function UserInfoCard() {
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Last Name
               </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Chowdhury
+              <p className="text-sm font-medium text-gray-800 dark:text-white/90 capitalize">
+                  {user?.lastName}
               </p>
             </div>
 
@@ -43,25 +102,24 @@ export default function UserInfoCard() {
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                randomuser@pimjo.com
+                {user?.email}
               </p>
             </div>
 
-            <div>
+            {/* <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
                 Phone
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                +09 363 398 46
+                {user?.phone}
               </p>
-            </div>
-
-            <div>
+            </div> */}
+             <div>
               <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
-                Bio
+                Address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                Team Manager
+                {user?.address || 'N/A'}
               </p>
             </div>
           </div>
@@ -100,9 +158,9 @@ export default function UserInfoCard() {
               Update your details to keep your profile up-to-date.
             </p>
           </div>
-          <form className="flex flex-col">
+          <form className="flex flex-col" onSubmit={handleSubmit}>
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
-              <div>
+              {/* <div>
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                   Social Links
                 </h5>
@@ -134,7 +192,7 @@ export default function UserInfoCard() {
                     <Input type="text" value="https://instagram.com/PimjoHQ" />
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="mt-7">
                 <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
                   Personal Information
@@ -143,27 +201,44 @@ export default function UserInfoCard() {
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
                     <Label>First Name</Label>
-                    <Input type="text" value="Musharof" />
+                    <Input type="text"
+                    name="firstName"
+                    onChange={handleUpdateState}
+                    value={formData.firstName}
+                    placeholder="Enter your firstname..."
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Last Name</Label>
-                    <Input type="text" value="Chowdhury" />
+                    <Input type="text"
+                      name="lastName"
+                    onChange={handleUpdateState}
+                    value={formData.lastName}
+                    placeholder="Enter your lastname..."  />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Email Address</Label>
-                    <Input type="text" value="randomuser@pimjo.com" />
-                  </div>
-
-                  <div className="col-span-2 lg:col-span-1">
-                    <Label>Phone</Label>
-                    <Input type="text" value="+09 363 398 46" />
+                    <Input type="text"
+                       name="email"
+                    onChange={handleUpdateState}
+                    value={formData.email}
+                    placeholder="xyz@masterunion.com" />
                   </div>
 
                   <div className="col-span-2">
-                    <Label>Bio</Label>
-                    <Input type="text" value="Team Manager" />
+                    <Label>Address</Label>
+                    <TextArea 
+                    // name="address"
+                    onChange={(value)=>{
+                        setFormData(prev => ({
+                        ...prev,
+                        address: value
+                      }))
+                    }}
+                    value={formData.address}
+                    placeholder="Address..." />
                   </div>
                 </div>
               </div>
@@ -172,8 +247,10 @@ export default function UserInfoCard() {
               <Button size="sm" variant="outline" onClick={closeModal}>
                 Close
               </Button>
-              <Button size="sm" onClick={handleSave}>
-                Save Changes
+              <Button size="sm" >
+                {
+                  loading ? 'Save Changes...':'Save Changes'
+                }
               </Button>
             </div>
           </form>

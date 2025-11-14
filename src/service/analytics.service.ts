@@ -58,5 +58,11 @@ class Analytics{
             }
         }).then((res)=>res.data.data || res.data)
     }
+    async getCategories(){
+        return await axiosInstance.get('/dashboard/get-categorie-names').then((res)=>res.data.data || res.data)
+    }
+    async subCategoryProducts(categoryId:string){
+        return await axiosInstance.get('/dashboard/get-subcategory-count/'+categoryId).then((res)=>res.data.data || res.data)
+    }
 }
 export const AnalyticsInstance = new Analytics();

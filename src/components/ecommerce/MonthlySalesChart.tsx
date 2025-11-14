@@ -67,14 +67,19 @@ export default function MonthlySalesChart({data}:Props) {
       opacity: 1,
     },
 
-    tooltip: {
-      x: {
-        show: false,
-      },
-      y: {
-        formatter: (val: number) => `${val}`,
-      },
-    },
+   tooltip: {
+  custom: function({ series, dataPointIndex, w }) {
+    const category = w.globals.labels[dataPointIndex];
+    const value = series[0][dataPointIndex]
+    return `
+      <div ">
+        <div style="font-size:13px; font-weight:600; margin-bottom:4px">${category}</div>
+        <div  style="font-size:12px">${value}</div>
+      </div>
+    `;
+  }
+}
+
   };
   const series = [
     {
@@ -95,7 +100,7 @@ export default function MonthlySalesChart({data}:Props) {
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-          Monthly Sales
+          Category Product's
         </h3>
         <div className="relative inline-block">
           <button className="dropdown-toggle" onClick={toggleDropdown}>

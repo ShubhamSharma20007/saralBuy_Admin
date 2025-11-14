@@ -1,8 +1,19 @@
 import Chart from "react-apexcharts";
 import { ApexOptions } from "apexcharts";
 import ChartTab from "../common/ChartTab";
+import { useEffect, useState } from "react";
 
-export default function StatisticsChart() {
+type Props={
+  fn:(categoryId:string)=>Promise<any>;
+  data:any;
+}
+export default function StatisticsChart({fn,data}:Props) {
+   const [selectedTileId, setSelectedTileId] = useState('')
+   useEffect(()=>{
+    console.log(selectedTileId)
+   if(selectedTileId)  fn(selectedTileId)
+   },[selectedTileId])
+   console.log(data,234)
   const options: ApexOptions = {
     legend: {
       show: false, // Hide legend
@@ -61,20 +72,7 @@ export default function StatisticsChart() {
     },
     xaxis: {
       type: "category", // Category-based x-axis
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      categories: data?.reduce((acc:any,curr:any)=>acc.concat(curr.name),[]),
       axisBorder: {
         show: false, // Hide x-axis border
       },
@@ -103,27 +101,24 @@ export default function StatisticsChart() {
 
   const series = [
     {
-      name: "Sales",
-      data: [180, 190, 170, 160, 175, 165, 170, 205, 230, 210, 240, 235],
+      name: "Subcategory",
+      data: data?.map((item:any)=>item.count)
     },
-    {
-      name: "Revenue",
-      data: [40, 30, 50, 40, 55, 40, 70, 100, 110, 120, 150, 140],
-    },
+ 
   ];
   return (
     <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
         <div className="w-full">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-            Statistics
+            Subcategory Product Count
           </h3>
           <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-            Target you’ve set for each month
+            Target subcategory filter category wise
           </p>
         </div>
         <div className="flex items-start w-full gap-3 sm:justify-end">
-          <ChartTab />
+          <ChartTab  setSelectedTileId={setSelectedTileId} selectedTileId={selectedTileId}/>
         </div>
       </div>
 

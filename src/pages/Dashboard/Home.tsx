@@ -12,9 +12,14 @@ import { useEffect } from "react";
 export default function Home() {
   const {fn,data} = useFetch(AnalyticsInstance.dashboardAnalytcs);
   const {fn:productAnalyticsFn,data:productAnalytics} = useFetch(AnalyticsInstance.getProductAnalytcs);
+  const {fn:subcatgoryProductsFn,data:subcatgoryProductsRes} = useFetch(AnalyticsInstance.subCategoryProducts);
+
+
   useEffect(()=>{
-   fn(),productAnalyticsFn()
+   fn();
+   productAnalyticsFn();
   },[])
+
   return (
     <>
       <PageMeta
@@ -33,7 +38,7 @@ export default function Home() {
         </div> */}
 
         <div className="col-span-12">
-          <StatisticsChart />
+          <StatisticsChart fn={subcatgoryProductsFn} data={subcatgoryProductsRes} />
         </div>
 
         {/* <div className="col-span-12 xl:col-span-5">
