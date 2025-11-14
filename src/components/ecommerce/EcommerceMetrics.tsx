@@ -6,7 +6,7 @@ import {
 } from "../../icons";
 import Badge from "../ui/badge/Badge";
 
-export default function EcommerceMetrics() {
+export default function EcommerceMetrics({data}:any) {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-6">
       {/* <!-- Metric Item Start --> */}
@@ -18,16 +18,27 @@ export default function EcommerceMetrics() {
         <div className="flex items-end justify-between mt-5">
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              User's
+              Total Users
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              3,782
+              {data?.users?.user || 0}
             </h4>
           </div>
+          <div className="flex flex-col gap-3">
           <Badge color="success">
+            Active
             <ArrowUpIcon />
-            11.01%
+            {data?.users?.activeUsers || 0}
           </Badge>
+           <Badge color="error">
+            Inactive
+            <ArrowDownIcon />
+            {data?.users?.inactiveUsers || 0}
+          </Badge>
+          
+          </div>
+         
+          
         </div>
       </div>
       {/* <!-- Metric Item End --> */}
@@ -40,17 +51,17 @@ export default function EcommerceMetrics() {
         <div className="flex items-end justify-between mt-5">
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Orders
+              Products
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              5,359
+             {data?.products || 0}
             </h4>
           </div>
 
-          <Badge color="error">
+          {/* <Badge color="error">
             <ArrowDownIcon />
             9.05%
-          </Badge>
+          </Badge> */}
         </div>
       </div>
       {/* <!-- Metric Item End --> */}
@@ -62,17 +73,17 @@ export default function EcommerceMetrics() {
         <div className="flex items-end justify-between mt-5">
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">
-              Orders
+              Requirements
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              5,359
+              {data?.requirements || 0}
             </h4>
           </div>
 
-          <Badge color="error">
+          {/* <Badge color="error">
             <ArrowDownIcon />
             9.05%
-          </Badge>
+          </Badge> */}
         </div>
       </div>
       {/* <!-- Inactve User End --> */}

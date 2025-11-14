@@ -1,12 +1,20 @@
 import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
 import MonthlySalesChart from "../../components/ecommerce/MonthlySalesChart";
 import StatisticsChart from "../../components/ecommerce/StatisticsChart";
-import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
+// import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
 import RecentOrders from "../../components/ecommerce/RecentOrders";
-import DemographicCard from "../../components/ecommerce/DemographicCard";
+// import DemographicCard from "../../components/ecommerce/DemographicCard";
 import PageMeta from "../../components/common/PageMeta";
+import { useFetch } from "../../hooks/useFetch";
+import { AnalyticsInstance } from "../../service/analytics.service";
+import { useEffect } from "react";
 
 export default function Home() {
+  const {fn,data} = useFetch(AnalyticsInstance.dashboardAnalytcs);
+  const {fn:productAnalyticsFn,data:productAnalytics} = useFetch(AnalyticsInstance.getProductAnalytcs);
+  useEffect(()=>{
+   fn(),productAnalyticsFn()
+  },[])
   return (
     <>
       <PageMeta
@@ -15,9 +23,9 @@ export default function Home() {
       />
       <div className="grid grid-cols-12 gap-4 md:gap-6">
         <div className="col-span-12 space-y-6 xl:col-span-12">
-          <EcommerceMetrics />
+          <EcommerceMetrics data={data}/>
 
-          <MonthlySalesChart />
+          <MonthlySalesChart  data={productAnalytics} />
         </div>
 
         {/* <div className="col-span-12 xl:col-span-5">
@@ -33,7 +41,7 @@ export default function Home() {
         </div> */}
 
         <div className="col-span-12 xl:col-span-12">
-          <RecentOrders />
+          <RecentOrders raws={data?.recentProductCreated} />
         </div>
       </div>
     </>

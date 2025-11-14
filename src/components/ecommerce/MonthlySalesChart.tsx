@@ -5,7 +5,11 @@ import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { MoreDotIcon } from "../../icons";
 import { useState } from "react";
 
-export default function MonthlySalesChart() {
+type Props={
+  data:any;
+}
+export default function MonthlySalesChart({data}:Props) {
+  console.log(data)
   const options: ApexOptions = {
     colors: ["#465fff"],
     chart: {
@@ -33,20 +37,7 @@ export default function MonthlySalesChart() {
       colors: ["transparent"],
     },
     xaxis: {
-      categories: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      categories:data?.reduce((acc:any,curr:any)=>acc.concat(curr.categoryName),[]),
       axisBorder: {
         show: false,
       },
@@ -87,8 +78,8 @@ export default function MonthlySalesChart() {
   };
   const series = [
     {
-      name: "Sales",
-      data: [168, 385, 201, 298, 187, 195, 291, 110, 215, 390, 280, 112],
+
+      data:data?.reduce((acc:any,curr:any)=>acc.concat(curr.productCount),[]),
     },
   ];
   const [isOpen, setIsOpen] = useState(false);

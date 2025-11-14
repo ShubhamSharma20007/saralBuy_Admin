@@ -6,9 +6,11 @@ import {
   BoxCubeIcon,
   CalenderIcon,
   ChevronDownIcon,
+  CopyIcon,
   GridIcon,
   HorizontaLDots,
   ListIcon,
+  LockIcon,
   PageIcon,
   PieChartIcon,
   PlugInIcon,
@@ -36,6 +38,18 @@ const navItems: NavItem[] = [
     icon: <UserCircleIcon />,
     name: "User Profile",
     path: "/profile",
+  },
+  {
+    icon: <LockIcon />,
+    name: "User Permissions",
+    path: "/user-permission",
+  },
+    {
+    icon: <CopyIcon />,
+    name: "S3 Banner Bucket",
+  subItems: [{ name: "Banner Bucket", path: "/banner-bucket", pro: false },
+    { name: "Banner Listing", path: "/banner-table", pro: false }
+  ],
   },
   {
     name: "Forms",
