@@ -9,13 +9,15 @@ interface InputProps {
   value?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
-  min?: string;
-  max?: string;
+  min?: string | number;
+  max?: string | number;
   step?: number;
   disabled?: boolean;
   success?: boolean;
   error?: boolean;
+  maxLength?: number;
   hint?: string;
+  props?: React.InputHTMLAttributes<HTMLInputElement>;
 }
 
 const Input: FC<InputProps> = ({
@@ -33,6 +35,9 @@ const Input: FC<InputProps> = ({
   success = false,
   error = false,
   hint,
+  maxLength,
+  props
+  
 }) => {
   let inputClasses = ` h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 ${className}`;
 
@@ -49,7 +54,9 @@ const Input: FC<InputProps> = ({
   return (
     <div className="relative">
       <input
+        {...props}
         type={type}
+        maxLength={maxLength}
         id={id}
         name={name}
         placeholder={placeholder}

@@ -46,9 +46,6 @@ import AllProducts from "./pages/AllProduct/AllProducts";
 
 const Home = lazy(() => import("./pages/Dashboard/Home"));
 
-// -------------------------
-// 🔒 PROTECTED ROUTE
-// -------------------------
 function ProtectedRoute({ children }:any) {
   const { user, setUser } = useContext(UserContext)!;
   const { fn, data, loading, error } = useFetch(AuthServiceInstance.adminProfile);
@@ -80,10 +77,6 @@ function ProtectedRoute({ children }:any) {
   return children;
 }
 
-
-// -------------------------
-// 🚀 MAIN APP ROUTER
-// -------------------------
 export default function App() {
   return (
     <Router>
