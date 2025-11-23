@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useFetch } from "../../hooks/useFetch";
 import { AnalyticsInstance } from "../../service/analytics.service";
 

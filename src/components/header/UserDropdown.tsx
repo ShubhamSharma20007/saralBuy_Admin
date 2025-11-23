@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { Link, useNavigate } from "react-router";
+import {  useNavigate } from "react-router";
 import { useFetch } from "../../hooks/useFetch";
 import { AuthServiceInstance } from "../../service/auth.service";
-import { UserContext, useUserContext } from "../../context/UserContext";
+import {  useUserContext } from "../../context/UserContext";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);

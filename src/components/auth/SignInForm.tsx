@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
+import {  EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
-import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import { useFetch } from "../../hooks/useFetch";
 import { AuthServiceInstance } from "../../service/auth.service";
@@ -11,7 +10,7 @@ import { toast } from "sonner";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const {fn,data,error,loading}= useFetch(AuthServiceInstance.login)
+  const {fn,data,loading}= useFetch(AuthServiceInstance.login)
   const navigate= useNavigate()
   const [formData,setFormData]=useState({
     email:"",

@@ -6,7 +6,7 @@ import Label from "../form/Label";
 import { useUserContext } from "../../context/UserContext";
 
 export default function UserMetaCard() {
-  const { isOpen, openModal, closeModal } = useModal();
+  const { isOpen, closeModal } = useModal();
   const {user} = useUserContext()
   const handleSave = () => {
     // Handle save logic here

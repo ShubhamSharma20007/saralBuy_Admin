@@ -12,7 +12,7 @@ export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const { fn, data, error,loading } = useFetch(AuthServiceInstance.register);
+  const { fn, data,loading } = useFetch(AuthServiceInstance.register);
 
   const [formData, setFormData] = useState({
     fname: "",

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/table';
-import Badge from '../../components/ui/badge/Badge';
+// import Badge from '../../components/ui/badge/Badge';
 import { PencilIcon } from '../../icons';
 import { useFetch } from '../../hooks/useFetch';
 import { AnalyticsInstance } from '../../service/analytics.service';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+// import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
 import Label from '../../components/form/Label';
 import FileInput from '../../components/form/input/FileInput';
 import Input from '../../components/form/input/InputField';

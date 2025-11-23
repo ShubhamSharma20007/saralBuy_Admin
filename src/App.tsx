@@ -4,7 +4,7 @@ import {
   Route,
   Navigate,
 } from "react-router";
-import React, {
+import  {
   Suspense,
   useContext,
   useEffect,
@@ -49,7 +49,7 @@ const Home = lazy(() => import("./pages/Dashboard/Home"));
 // -------------------------
 // 🔒 PROTECTED ROUTE
 // -------------------------
-function ProtectedRoute({ children }) {
+function ProtectedRoute({ children }:any) {
   const { user, setUser } = useContext(UserContext)!;
   const { fn, data, loading, error } = useFetch(AuthServiceInstance.adminProfile);
   const [checking, setChecking] = useState(true);
