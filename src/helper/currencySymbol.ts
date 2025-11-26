@@ -1,0 +1,1 @@
+export const currenySymbol= (val:number)=> new Intl.NumberFormat('en-IN').format(val)

@@ -8,6 +8,7 @@ import {
   CopyIcon,
   GridIcon,
   HorizontaLDots,
+  ListIcon,
   LockIcon,
   PieChartIcon,
   PlugInIcon,
@@ -46,6 +47,11 @@ const navItems: NavItem[] = [
   subItems: [{ name: "Banner Bucket", path: "/banner-bucket", pro: false },
     { name: "Banner Listing", path: "/banner-table", pro: false }
   ],
+  },
+   {
+    icon: <ListIcon />,
+    name: "Bid Listing",
+    path: "/bid-listing",
   },
     // {
     //   name: "Forms",

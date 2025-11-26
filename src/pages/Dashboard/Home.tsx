@@ -16,8 +16,8 @@ export default function Home() {
 
 
   useEffect(()=>{
-   fn();
-   productAnalyticsFn();
+   Promise.resolve([fn(),
+   productAnalyticsFn()])
   },[])
 
   return (

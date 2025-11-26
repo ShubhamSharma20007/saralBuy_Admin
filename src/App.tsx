@@ -43,6 +43,8 @@ import UserPersmission from "./pages/UserPermission/UserPersmission";
 import BannerBucket from "./pages/S3Bucket/BannerBucket";
 import BannerListing from "./pages/S3Bucket/BannerListing";
 import AllProducts from "./pages/AllProduct/AllProducts";
+import BidListing from "./pages/BidListing/BidListing";
+import BidListingByProduct from "./pages/BidListing/BidListingByProduct";
 
 const Home = lazy(() => import("./pages/Dashboard/Home"));
 
@@ -129,6 +131,12 @@ export default function App() {
           {/* Charts */}
           <Route path="/line-chart" element={<LineChart />} />
           <Route path="/bar-chart" element={<BarChart />} />
+          <Route path="/bid-listing" element={<BidListing />} />
+          <Route path="/bid-listing-by-product/:id" element={
+            <Suspense fallback={<p>Loading...</p>}>
+              <BidListingByProduct />
+            </Suspense>
+          } />
         </Route>
 
         {/* Auth Routes */}
