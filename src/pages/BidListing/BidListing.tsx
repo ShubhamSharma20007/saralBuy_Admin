@@ -1,17 +1,16 @@
 import React, { useEffect } from 'react'
 import { useFetch } from '../../hooks/useFetch'
 import bidService from '../../service/bid.service'
-import BasicTableOne from '../../components/tables/BasicTables/BasicTableOne'
+// import BasicTableOne from '../../components/tables/BasicTables/BasicTableOne'
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/table'
-import Badge from '../../components/ui/badge/Badge'
-import { EyeIcon, PencilIcon } from '../../icons'
+import { EyeIcon } from '../../icons'
 import { useNavigate } from 'react-router'
 import { currenySymbol } from '../../helper/currencySymbol'
 
 const BidListing = () => {
   const { fn, data } = useFetch(bidService.getBids)
   const [text, setText] = React.useState('')
-  const [limit, setLimit] = React.useState(10);
+  const [limit, _] = React.useState(10);
   const [page, setPage] = React.useState(1)
   const totalBids = data?.totalBids || 0;
   const totalPages = Math.ceil(totalBids / limit);

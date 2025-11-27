@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import {  useParams } from 'react-router'
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/table'
 import Badge from '../../components/ui/badge/Badge'
 import { useFetch } from '../../hooks/useFetch'
@@ -10,7 +10,7 @@ const BidListingByProduct = () => {
     const [productObj,setProductObj] = useState<any>({})
     const {fn,data}= useFetch(bidService.getBidById)
      const [text, setText] = React.useState('')
-      const [limit, setLimit] = React.useState(10);
+      const [limit, _] = React.useState(10);
       const [page, setPage] = React.useState(1)
       const totalBids = data?.totalBids || 0;
       const totalPages = Math.ceil(totalBids / limit);
@@ -180,17 +180,45 @@ const BidListingByProduct = () => {
 
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-              {productObj?.productOnBids && productObj?.productOnBids.map((entry: any,index:number) => (
+              {productObj?.productOnBids && productObj?.productOnBids.map((entry: any) => (
                 <TableRow key={entry._id}>
                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {currenySymbol(entry?.budgetQuation) || "N/A"}
                   </TableCell>
                      
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {entry.buyerId.firstName || ''} {entry.buyerId.lastName || ''}
+                     <div className="flex items-center gap-3">
+                      <div className="w-[40px] h-[40px] overflow-hidden rounded-full">
+                        <img
+                            className='w-full h-full object-contain'
+                          src={entry.buyerId.profileImage || "/avatar.jpg"}
+                          alt={`${entry.buyerId.profileImage} `}
+                        />
+                      </div>
+                      <div>
+                        <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                        {entry.buyerId.firstName || ''} {entry.buyerId.lastName || ''}
+                        </span>
+                      </div>
+                    </div>
+                   
                   </TableCell>
                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                    {entry.sellerId.firstName || ''} {entry.sellerId.lastName || ''}
+                         <div className="flex items-center gap-3">
+                      <div className="w-[40px] h-[40px] overflow-hidden rounded-full">
+                        <img
+                            className='w-full h-full object-contain'
+                          src={entry.sellerId.profileImage || "/avatar.jpg"}
+                          alt={`${entry.sellerId.profileImage} `}
+                        />
+                      </div>
+                      <div>
+                        <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                     {entry.sellerId.firstName || ''} {entry.sellerId.lastName || ''}
+                        </span>
+                      </div>
+                    </div>
+                    
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     <Badge
