@@ -9,7 +9,7 @@ import Switch from "../../form/switch/Switch";
 import Badge from "../../ui/badge/Badge";
 import { EyeIcon, PencilIcon } from "../../../icons";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { UserServiceInstance } from "../../../service/user.service";
 import { useFetch } from "../../../hooks/useFetch";
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
@@ -32,9 +32,22 @@ import {
 } from "../../ui/sheet"
 import { useSheet } from "@/hooks/userSheet";
 import { Button } from "../../ui/button";
-export default function BasicTableOne({ data, limit, page, setPage, setText }: any) {
+import Radio from "@/components/form/input/Radio";
+import ComponentCard from "@/components/common/ComponentCard";
+
+enum selectOptions {
+  active = "active",
+  inactive = "inactive",
+}
+enum sortingOptions {
+  asc = 'asc',
+  desc = 'desc'
+}
+
+export default function BasicTableOne({sort,setSort,selectActiveOption,setSelectActiveOption, data, limit, page, setPage, setText}: any) {
   const { fn: geteUserFn, data: getUserData } = useFetch(UserServiceInstance.getUserById)
-  const { fn: updateUserFn, data: updateUserData,loading:userUpdateLoading } = useFetch(UserServiceInstance.updateUser)
+  
+  const { fn: updateUserFn, data: updateUserData, loading: userUpdateLoading } = useFetch(UserServiceInstance.updateUser)
   const {
     register,
     handleSubmit,
@@ -55,6 +68,7 @@ export default function BasicTableOne({ data, limit, page, setPage, setText }: a
   const totalUsers = data?.totalUsers || 0;
   const totalPages = Math.ceil(totalUsers / limit);
   const { isOpen, openModal, closeModal } = useModal();
+  const {isOpenSheet,setIsOpenSheet,openSheet}= useSheet()
   const start = (page - 1) * limit + 1;
   const end = Math.min(page * limit, totalUsers);
   const [open, setOpen] = useState(false)
@@ -162,13 +176,37 @@ export default function BasicTableOne({ data, limit, page, setPage, setText }: a
     await updateUserFn(getUserData._id, data);
   }
 
-  useEffect(()=>{
-    if(updateUserData && isOpen){
+  useEffect(() => {
+    if (updateUserData && isOpen) {
       toast.success("User details updated successfully")
       closeModal();
-      
+
     }
-  },[updateUserData])
+  }, [updateUserData])
+
+  const handleRadioChange = useCallback((value: string, type: string) => {
+    if (type === 'status') setSelectActiveOption(value as selectOptions);
+    if (type === 'sorting') setSort(value as sortingOptions)
+  }, [sort, selectActiveOption])
+
+
+  async function handleFilterSubmit(e:React.MouseEvent<HTMLButtonElement>){
+    console.log(sort,selectActiveOption)
+  }
+  
+  
+async function handleFilterReset(){
+  if(sort || selectActiveOption){
+  setSort('');
+  setSelectActiveOption('');
+  setIsOpenSheet(false)
+  }
+}
+
+useEffect(()=>{
+    setIsOpenSheet(false)
+},[sort,selectActiveOption])
+
   return (
     <>
       {/* User Details */}
@@ -255,22 +293,30 @@ export default function BasicTableOne({ data, limit, page, setPage, setText }: a
                     <Label>Email Address</Label>
                     <Input type="email"
                       onChange={(e: any) => setValue("email", e.target.value)}
-                      props={{ ...register("email", { required: "Invalid email", minLength: 5, pattern:{
-                        value:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                        message:"Invalid email address"
-                      }}) }}
+                      props={{
+                        ...register("email", {
+                          required: "Invalid email", minLength: 5, pattern: {
+                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                            message: "Invalid email address"
+                          }
+                        })
+                      }}
                       placeholder="xyz@masterunion.com" />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
                     <Label>Phone</Label>
                     <Input type="tel"
-                     maxLength={10}
+                      maxLength={10}
                       onChange={(e: any) => setValue("phone", e.target.value)}
-                      props={{ ...register("phone", { required: "Invalid phone number",pattern:{
-                        value:/^[0-9]{10}$/,
-                        message:"Phone number must be 10 digits"
-                      } }) }}
+                      props={{
+                        ...register("phone", {
+                          required: "Invalid phone number", pattern: {
+                            value: /^[0-9]{10}$/,
+                            message: "Phone number must be 10 digits"
+                          }
+                        })
+                      }}
                       placeholder="Enter your phone number..." />
                   </div>
 
@@ -284,12 +330,12 @@ export default function BasicTableOne({ data, limit, page, setPage, setText }: a
                   </div>
                   {
                     getValues('lastLogin') && <div className="col-span-2 lg:col-span-1">
-                    <Label>Last Login</Label>
-                    <Input type="date"
-                      disabled={true}
-                      props={{ ...register("lastLogin") }}
-                    />
-                  </div>
+                      <Label>Last Login</Label>
+                      <Input type="date"
+                        disabled={true}
+                        props={{ ...register("lastLogin") }}
+                      />
+                    </div>
                   }
                   <div className="col-span-2">
                     <Label>Address</Label>
@@ -388,113 +434,160 @@ export default function BasicTableOne({ data, limit, page, setPage, setText }: a
           </div>
         </div>
       </Dialog>
+
+
+      {/*  Filter Sheet */}
+             <Sheet open={isOpenSheet} onOpenChange={setIsOpenSheet}>
+
+                  <SheetContent>
+            <SheetHeader>
+              <SheetTitle>User Filter</SheetTitle>
+            </SheetHeader>
+            <div className="px-4 grid gap-3">
+              <ComponentCard title="User Status">
+
+                <div className="flex flex-wrap items-center gap-8">
+
+                  <Radio
+                    id="radio2"
+                    name="group1"
+                    value="active"
+                    checked={selectActiveOption === "active"}
+                    onChange={(value: string) => {
+                      handleRadioChange(value, 'status')
+                    }}
+                    label="Active"
+                  />
+                  <Radio
+                    id="radio3"
+                    name="group1"
+                    value="inactive"
+                    checked={selectActiveOption === "inactive"}
+                    onChange={(value: string) => {
+                      handleRadioChange(value, 'status')
+                    }}
+                    label="Inactive"
+                  />
+                </div>
+
+              </ComponentCard>
+              <ComponentCard title="Sorting">
+
+                <div className="flex flex-wrap items-center gap-8">
+
+                  <Radio
+                    id="radio4"
+                    name="asc"
+                    value="asc"
+                    checked={sort === "asc"}
+                    onChange={(value: string) => {
+                      handleRadioChange(value, 'sorting')
+                    }}
+                    label="Ascending"
+                  />
+                  <Radio
+                    id="radio5"
+                    name="desc"
+                    value="desc"
+                    checked={sort === "desc"}
+                    onChange={(value: string) => {
+                      handleRadioChange(value, 'sorting')
+                    }}
+                    label="Descending"
+                  />
+                </div>
+
+              </ComponentCard>
+
+            </div>
+        
+            <SheetFooter>
+              <Button type="submit" onClick={handleFilterSubmit}>Go Search</Button>
+              <SheetClose asChild />
+
+              <Button  type="reset" onClick={handleFilterReset} variant="outline" >Reset Filter's</Button>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
       <form
         onSubmit={handleTextSearch}
         className="flex items-center justify-end ml-auto max-w-sm mb-3 gap-6">
         <div className="flex items-center justify-end ml-auto max-w-sm ">
           <label htmlFor="simple-search" className="sr-only">
-          Search
-        </label>
-        <div className="relative w-full">
-          <input
-            type="text"
-            id="simple-search"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Search..."
-          />
-        </div>
-        <button
-          type="submit"
-          className="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          <svg
-            className="w-4 h-4"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 20"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+            Search
+          </label>
+          <div className="relative w-full">
+            <input
+              type="text"
+              id="simple-search"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full  p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Search..."
             />
-          </svg>
-          <span className="sr-only">Search</span>
-        </button>
-        </div>
-        {/*  Filter button */}
-         <Sheet>
-      <SheetTrigger asChild>
- 
-  <button type="button" className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+          </div>
+          <button
+            type="submit"
+            className="p-2.5 ms-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
             <svg
-              className="stroke-current fill-white dark:fill-gray-800"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
+              className="w-4 h-4"
+              aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
             >
               <path
-                d="M2.29004 5.90393H17.7067"
-                stroke=""
-                strokeWidth="1.5"
+                stroke="currentColor"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-              />
-              <path
-                d="M17.7075 14.0961H2.29085"
-                stroke=""
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M12.0826 3.33331C13.5024 3.33331 14.6534 4.48431 14.6534 5.90414C14.6534 7.32398 13.5024 8.47498 12.0826 8.47498C10.6627 8.47498 9.51172 7.32398 9.51172 5.90415C9.51172 4.48432 10.6627 3.33331 12.0826 3.33331Z"
-                fill=""
-                stroke=""
-                strokeWidth="1.5"
-              />
-              <path
-                d="M7.91745 11.525C6.49762 11.525 5.34662 12.676 5.34662 14.0959C5.34661 15.5157 6.49762 16.6667 7.91745 16.6667C9.33728 16.6667 10.4883 15.5157 10.4883 14.0959C10.4883 12.676 9.33728 11.525 7.91745 11.525Z"
-                fill=""
-                stroke=""
-                strokeWidth="1.5"
+                strokeWidth={2}
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
               />
             </svg>
-            Filter
+            <span className="sr-only">Search</span>
           </button>
+        </div>
+        {/*  Filter button */}
+             <button type="button"
+            onClick={openSheet}
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+              <svg
+                className="stroke-current fill-white dark:fill-gray-800"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2.29004 5.90393H17.7067"
+                  stroke=""
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M17.7075 14.0961H2.29085"
+                  stroke=""
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M12.0826 3.33331C13.5024 3.33331 14.6534 4.48431 14.6534 5.90414C14.6534 7.32398 13.5024 8.47498 12.0826 8.47498C10.6627 8.47498 9.51172 7.32398 9.51172 5.90415C9.51172 4.48432 10.6627 3.33331 12.0826 3.33331Z"
+                  fill=""
+                  stroke=""
+                  strokeWidth="1.5"
+                />
+                <path
+                  d="M7.91745 11.525C6.49762 11.525 5.34662 12.676 5.34662 14.0959C5.34661 15.5157 6.49762 16.6667 7.91745 16.6667C9.33728 16.6667 10.4883 15.5157 10.4883 14.0959C10.4883 12.676 9.33728 11.525 7.91745 11.525Z"
+                  fill=""
+                  stroke=""
+                  strokeWidth="1.5"
+                />
+              </svg>
+              Filter
+            </button>
 
-      </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
-          <SheetDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
-          </SheetDescription>
-        </SheetHeader>
-        {/* <div className="grid flex-1 auto-rows-min gap-6 px-4">
-          <div className="grid gap-3">
-            <Label htmlFor="sheet-demo-name">Name</Label>
-            <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="sheet-demo-username">Username</Label>
-            <Input id="sheet-demo-username" defaultValue="@peduarte" />
-          </div>
-        </div> */}
-        <SheetFooter>
-          <Button type="submit">Save changes</Button>
-          <SheetClose asChild>
-            <Button variant="outline">Close</Button>
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
-        
       </form>
 
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">

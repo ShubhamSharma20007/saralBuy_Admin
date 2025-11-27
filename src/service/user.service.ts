@@ -1,12 +1,14 @@
 import { axiosInstance } from "../helper/axiosInstance";
 
 class UserService{
-    getUsers(limit:string,page:string,text:string){
+    getUsers(limit:string,page:string,text:string,selectActiveOption:string,sort:string){
         return axiosInstance.get("/user/get-users",{
             params:{
                 limit,
                 page,
-                text
+                text,
+                selectActiveOption,
+                sort
             }
         }).then(response => response.data.data ||response.data)
     }
