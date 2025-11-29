@@ -24,11 +24,9 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "../../ui/sheet"
 import { useSheet } from "@/hooks/userSheet";
 import { Button } from "../../ui/button";

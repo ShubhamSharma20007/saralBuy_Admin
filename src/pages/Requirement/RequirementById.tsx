@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import {  useParams } from 'react-router'
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/table'
-import Badge from '../../components/ui/badge/Badge'
 import { useFetch } from '../../hooks/useFetch'
 import { currenySymbol } from '../../helper/currencySymbol'
 import requirementService from '@/service/requirement.service'
@@ -10,7 +9,7 @@ const RequirementById = () => {
     const [productObj,setProductObj] = useState<any>({})
     const {fn,data}= useFetch(requirementService.getRequirementsById)
 
-     const [text, setText] = React.useState('')
+     const [text] = React.useState('')
       const [limit, _] = React.useState(10);
       const [page, setPage] = React.useState(1)
       const totalSellerCount = data?.totalSellerCount || 0;
@@ -58,11 +57,11 @@ const RequirementById = () => {
         }
       //  return()=>localStorage.removeItem('bids')
     },[data])
-     function handleTextSearch(e: any) {
-    e.preventDefault();
-    const searchTerm = e.target[0].value;
-    setText(searchTerm);
-  }
+//      function handleTextSearch(e: any) {
+//     e.preventDefault();
+//     const searchTerm = e.target[0].value;
+//     setText(searchTerm);
+//   }
 
 
   return (
