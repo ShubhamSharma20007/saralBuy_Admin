@@ -12,6 +12,7 @@ import {
   LockIcon,
   PieChartIcon,
   PlugInIcon,
+  TableIcon,
   UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
@@ -52,6 +53,11 @@ const navItems: NavItem[] = [
     icon: <ListIcon />,
     name: "Bid Listing",
     path: "/bid-listing",
+  },
+   {
+    icon: <TableIcon />,
+    name: "Requirement",
+    path: "/requirement",
   },
     {
       name: "Forms",

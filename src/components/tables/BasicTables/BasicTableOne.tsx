@@ -44,7 +44,7 @@ enum sortingOptions {
   desc = 'desc'
 }
 
-export default function BasicTableOne({sort,setSort,selectActiveOption,setSelectActiveOption, data, limit, page, setPage, setText}: any) {
+export default function BasicTableOne({handleFilterSubmit,handleFilterReset,sort,setSort,selectActiveOption,setSelectActiveOption, data, limit, page, setPage, setText}: any) {
   const { fn: geteUserFn, data: getUserData } = useFetch(UserServiceInstance.getUserById)
   
   const { fn: updateUserFn, data: updateUserData, loading: userUpdateLoading } = useFetch(UserServiceInstance.updateUser)
@@ -68,7 +68,7 @@ export default function BasicTableOne({sort,setSort,selectActiveOption,setSelect
   const totalUsers = data?.totalUsers || 0;
   const totalPages = Math.ceil(totalUsers / limit);
   const { isOpen, openModal, closeModal } = useModal();
-  const {isOpenSheet,setIsOpenSheet,openSheet}= useSheet()
+  const {isOpenSheet,setIsOpenSheet,openSheet,closeSheet}= useSheet()
   const start = (page - 1) * limit + 1;
   const end = Math.min(page * limit, totalUsers);
   const [open, setOpen] = useState(false)
@@ -190,22 +190,10 @@ export default function BasicTableOne({sort,setSort,selectActiveOption,setSelect
   }, [sort, selectActiveOption])
 
 
-  async function handleFilterSubmit(e:React.MouseEvent<HTMLButtonElement>){
-    console.log(sort,selectActiveOption)
-  }
-  
-  
-async function handleFilterReset(){
-  if(sort || selectActiveOption){
-  setSort('');
-  setSelectActiveOption('');
-  setIsOpenSheet(false)
-  }
-}
 
-useEffect(()=>{
-    setIsOpenSheet(false)
-},[sort,selectActiveOption])
+  
+  
+
 
   return (
     <>
@@ -502,10 +490,16 @@ useEffect(()=>{
             </div>
         
             <SheetFooter>
-              <Button type="submit" onClick={handleFilterSubmit}>Go Search</Button>
+              <Button type="submit" onClick={()=>{
+                handleFilterSubmit();
+                closeSheet()
+              }}>Go Search</Button>
               <SheetClose asChild />
 
-              <Button  type="reset" onClick={handleFilterReset} variant="outline" >Reset Filter's</Button>
+              <Button  type="reset" onClick={()=>{
+                handleFilterReset();
+                closeSheet()
+              }} variant="outline" >Reset Filter's</Button>
             </SheetFooter>
           </SheetContent>
         </Sheet>
